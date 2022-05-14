@@ -1,7 +1,7 @@
-<p align="center">
+<!-- <p align="center">
   <a href="" rel="noopener">
  <img src="https://www.rio.rj.gov.br/image/image_gallery?uuid=2033a547-9ee3-4018-92a7-32ec57ce3a2c&groupId=73801&t=1552104163286" alt="Projeto ADS - Saúde e Bem-estar"></a>
-</p>
+</p> -->
 <h3 align="center">Boa Saúde e Bem-estar</h3>
 
 ---
