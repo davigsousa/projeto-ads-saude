@@ -1,0 +1,10 @@
+// Todo usuário deve possuir um perfil
+// uma avaliação deve possuir de 1 a 5 estrelas
+// lógica para obter o valor dos carboidratos totais
+// lógica para obter o valor dos proteinas totais
+// toda receita deve possuir mais de 1 ingrediente
+// o usuario deve possuir mais de 18 anos
+// a receita que um usuario consumiu deve estar no seu historico
+// a receita sugerida deve ser igual a preferencia alimentar do usuario
+// lógica para obter a avaliação media do historico
+// lógica para obter as receitas preferidas
