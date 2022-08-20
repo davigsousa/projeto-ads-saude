@@ -1,13 +1,13 @@
 -- Todo usuário deve possuir um perfil
 context Usuario inv devePossuirPerfil:
-  Perfil.allInstances()->exists(p: Perfil | self.perfil == p)
+  Perfil.allInstances()->exists(p: Perfil | self.perfil = p)
 
 -- uma avaliação deve possuir de 1 a 5 estrelas
 context AvaliacaoReceita inv devePossuirEstrelas:
   self.estrelas >= 1 && AvaliacaoReceita.estrelas <= 5
 
 -- lógica para obter o valor dos carboidratos totais de uma receita
-context Receita::getCarboidratos() : float
+context Receita::getCarboidratos() : Real
 post: result = self.ingredientes->collect(carboidratos)->sum()
 
 -- toda receita deve possuir mais de 1 ingrediente
@@ -23,18 +23,18 @@ context Usuario::HistoricoReceitas::receitas
   init: Set{}
 
 -- lógica para obter o consumo médio de proteinas
-context HistoricoReceitas::getConsumoMedioProteinas() : float
+context HistoricoReceitas::getConsumoMedioProteinas() : Real
 post: result = self.receitas->collect(receita.proteinas)->sum() / self.receitas->size()
 
 -- a receita sugerida deve possuir a preferência alimentar do igual ao do usuario
-context Usuario::getReceitaSugerida() : Receita
-post: result.preferenciaAlimentar == self.preferenciaAlimentar
+context Usuario::getReceitaSugerida() : Bag(Receita)
+post: result->forAll(receita | self.perfil.preferenciaAlimentar = receita.preferenciaAlimentar)
 
 -- lógica para obter a avaliação media do historico
-context HistoricoReceitas::getAvaliacaoMedia() : float
+context HistoricoReceitas::getAvaliacaoMedia() : Real
 post: result = self.receitas.avaliacao->collect(estrelas)->sum() / self.avaliacoes->size()
 
 -- lógica para obter as receitas preferidas
-context HistoricoReceitas::getReceitasPreferidas() : Receita[]
+context HistoricoReceitas::getReceitasPreferidas() : Bag(Receita)
 post: result = self.receitas->select(r: ReceitaConsumida | r.avaliacao.estrelas > self.getAvaliacaoMedia())
 
