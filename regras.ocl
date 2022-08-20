@@ -1,10 +1,40 @@
-// Todo usuário deve possuir um perfil
-// uma avaliação deve possuir de 1 a 5 estrelas
-// lógica para obter o valor dos carboidratos totais
-// lógica para obter o valor dos proteinas totais
-// toda receita deve possuir mais de 1 ingrediente
-// o usuario deve possuir mais de 18 anos
-// a receita que um usuario consumiu deve estar no seu historico
-// a receita sugerida deve ser igual a preferencia alimentar do usuario
-// lógica para obter a avaliação media do historico
-// lógica para obter as receitas preferidas
+-- Todo usuário deve possuir um perfil
+context Usuario inv devePossuirPerfil:
+  Perfil.allInstances()->exists(p: Perfil | self.perfil == p)
+
+-- uma avaliação deve possuir de 1 a 5 estrelas
+context AvaliacaoReceita inv devePossuirEstrelas:
+  self.estrelas >= 1 && AvaliacaoReceita.estrelas <= 5
+
+-- lógica para obter o valor dos carboidratos totais de uma receita
+context Receita::getCarboidratos() : float
+post: result = self.ingredientes->collect(carboidratos)->sum()
+
+-- toda receita deve possuir mais de 1 ingrediente
+context Receita inv qtdMinimaIgredientes:
+  self.ingredientes->size() > 1
+
+-- o usuario deve possuir mais de 18 anos
+context Usuario inv idadeMinima:
+  self.perfil.idade >= 18
+
+-- Um usuário deve ser criado com um conjunto vazio de receitas consumidas
+context Usuario::HistoricoReceitas::receitas
+  init: Set{}
+
+-- lógica para obter o consumo médio de proteinas
+context HistoricoReceitas::getConsumoMedioProteinas() : float
+post: result = self.receitas->collect(receita.proteinas)->sum() / self.receitas->size()
+
+-- a receita sugerida deve possuir a preferência alimentar do igual ao do usuario
+context Usuario::getReceitaSugerida() : Receita
+post: result.preferenciaAlimentar == self.preferenciaAlimentar
+
+-- lógica para obter a avaliação media do historico
+context HistoricoReceitas::getAvaliacaoMedia() : float
+post: result = self.receitas.avaliacao->collect(estrelas)->sum() / self.avaliacoes->size()
+
+-- lógica para obter as receitas preferidas
+context HistoricoReceitas::getReceitasPreferidas() : Receita[]
+post: result = self.receitas->select(r: ReceitaConsumida | r.avaliacao.estrelas > self.getAvaliacaoMedia())
+
